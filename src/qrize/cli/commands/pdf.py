@@ -1,27 +1,9 @@
-from typing import Dict, List
-from qrize.core import log, pdf, fs
+from qrize.core import log, pdf, fs, qr
 import typer
 
 from qrize.core import validators
 
 app: typer.Typer = typer.Typer(name="pdf")
-
-
-def filter_entries(entries: List[Dict], validator: Dict) -> List[Dict]:
-    """
-    Filter out entries that don't match the schema
-    """
-    for entry in entries:
-        if not entry:
-            log.warn("Empty entry, skipping.")
-            continue
-
-        err, _ = validators.validate_against_schema(entry, validator)
-        if err:
-            entries.remove(entry)
-            log.warn(message=err)
-
-    return entries
 
 
 @app.command()
@@ -34,6 +16,9 @@ def bulk(
     identifier: str = typer.Option(
         help="key to use to uniquely identify the entry, it must be present in the schema"
     ),
+    margin: int = typer.Option(default=10, help="margins around each qr code"),
+    qr_size: int = typer.Option(default=40, help="size of each qr code"),
+    spacing: int = typer.Option(default=5, help="spacing between each code"),
 ):
     """
     Processes several entries based on a common schema.
@@ -55,6 +40,13 @@ def bulk(
     if not entries:
         return log.fatal("No entries have been provided.")
 
-    entries = filter_entries(entries=entries, validator=validator)
+    entries = qr.filter_entries(entries=entries, validator=validator)
 
-    pdf.generate_from_entries(entries=entries, identifier=identifier, output=output)
+    pdf.generate_from_entries(
+        entries=entries,
+        identifier=identifier,
+        output=output,
+        margin=margin,
+        qr_size=qr_size,
+        spacing=spacing,
+    )

@@ -34,6 +34,9 @@ args:
     --schema     - [str] - default: None - schema file containing the json validation object
     --output     - [str] - default: None - output file
     --identifier - [str] - default: None - key to use to uniquely identify the entry, it must be present in the schema
+    --margin     - [int] - default: 10    - margins around each qr code
+    --qr_size    - [int] - default: 40   - size of each qr code
+    --spacing    - [int] - default: 5    - spacing between each code
 ```
 
 #### batch

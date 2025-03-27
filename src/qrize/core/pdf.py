@@ -24,34 +24,28 @@ def generate_from_entries(
     if fs.exists(output):
         return log.fatal("File already exists.")
 
-    # PDF settings
-    margin_ = margin * mm  # 20mm margin
-    qr_size_ = qr_size * mm  # 50mm QR code size
-    spacing_ = spacing * mm  # 10mm spacing between QR codes
-    label_height = 5 * mm  # Height for the label text
+    margin_: float = margin * mm
+    qr_size_: float = qr_size * mm
+    spacing_: float = spacing * mm
+    label_height: float = 5 * mm
 
-    # Calculate how many QR codes can fit in a row and column
-    page_width, page_height = A4
-    cols = int((page_width - 2 * margin_) // (qr_size_ + spacing_))
-    rows = int((page_height - 2 * margin_) // (qr_size_ + label_height + spacing_))
+    width, height = A4
+    cols = int((width - 2 * margin_) // (qr_size_ + spacing_))
+    rows = int((height - 2 * margin_) // (qr_size_ + label_height + spacing_))
 
-    # Create PDF
-    c = canvas.Canvas(output, pagesize=A4)
+    pdf: canvas.Canvas = canvas.Canvas(output, pagesize=A4)
 
     for idx, data in enumerate(entries):
-        # Calculate position for this QR code
         row = idx // cols
         col = idx % cols
 
         if row >= rows:  # Start a new page if needed
-            c.showPage()
+            pdf.showPage()
             row = 0
 
-        # Calculate x and y positions
         x = margin_ + col * (qr_size_ + spacing_)
-        y = page_height - (margin_ + row * (qr_size_ + label_height + spacing_))
+        y = height - (margin_ + row * (qr_size_ + label_height + spacing_))
 
-        # Create QR code
         err, img = qr.generate(data)
         if err:
             return log.fatal(err)
@@ -59,12 +53,10 @@ def generate_from_entries(
         if not img:
             return log.fatal("Failed to generate qr code.")
 
-        # Draw QR code
-        c.drawInlineImage(img, x, y - qr_size_, width=qr_size_, height=qr_size_)
+        pdf.drawInlineImage(img, x, y - qr_size_, width=qr_size_, height=qr_size_)
 
-        # Draw label
-        c.setFont("Helvetica", 10)
+        pdf.setFont("Helvetica", 10)
         label = data[identifier]
-        c.drawString(x + 10, y - qr_size_ - label_height, label)
+        pdf.drawString(x + 10, y - qr_size_ - label_height, label)
 
-    c.save()
+    pdf.save()
