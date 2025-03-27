@@ -17,7 +17,7 @@ def bulk(
         help="key to use to uniquely identify the entry, it must be present in the schema"
     ),
     margin: int = typer.Option(default=10, help="margins around each qr code"),
-    qr_size: int = typer.Option(default=40, help="size of each qr code"),
+    size: int = typer.Option(default=40, help="size of each qr code"),
     spacing: int = typer.Option(default=5, help="spacing between each code"),
 ):
     """
@@ -47,6 +47,6 @@ def bulk(
         identifier=identifier,
         output=output,
         margin=margin,
-        qr_size=qr_size,
+        qr_size=size,
         spacing=spacing,
     )

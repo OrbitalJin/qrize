@@ -13,6 +13,8 @@ qrize.add_typer(pdf.app)
 def generate(
     input: Optional[str] = typer.Option(None, help="Data to encode"),
     source: Optional[str] = typer.Option(None, help="File to encode"),
+    size: int = typer.Option(default=8, help="size of the qr code"),
+    border: int = typer.Option(default=4, help="border size surounding the qr code"),
     output: Optional[str] = typer.Option(default="./qr.png", help="Output file name"),
     clipboard: bool = typer.Option(default=False, help="Copy to clipboard"),
 ):
@@ -33,7 +35,7 @@ def generate(
     if err:
         log.fatal(err)
 
-    err, image = qr.generate(data=data)
+    err, image = qr.generate(data=data, size=size, border=border)
     if err:
         log.fatal(message=err)
 

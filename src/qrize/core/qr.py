@@ -7,7 +7,7 @@ import qrcode
 import json
 
 
-def generate(data: Any) -> Result[Image.Image]:
+def generate(data: Any, size: int = 8, border: int = 4) -> Result[Image.Image]:
     """
     Generate and return a qrcode image
     """
@@ -20,8 +20,8 @@ def generate(data: Any) -> Result[Image.Image]:
 
     qr: qrcode.QRCode = qrcode.QRCode(
         version=1,
-        box_size=8,
-        border=4,
+        box_size=size,
+        border=border,
     )
     qr.add_data(serialized)
     qr.make(fit=True)
