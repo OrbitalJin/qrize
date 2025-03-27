@@ -5,8 +5,10 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "jsonschema>=4.23.0",
     "pillow>=11.1.0",
     "pyperclip>=1.9.0",
+    "pyright>=1.1.398",
     "qrcode>=8.0",
     "reportlab>=4.3.1",
     "typer>=0.15.2",

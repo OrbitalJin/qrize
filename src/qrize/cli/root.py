@@ -9,17 +9,6 @@ qrize: typer.Typer = typer.Typer()
 qrize.add_typer(pdf.app)
 
 
-def xor(input: Optional[str], source: Optional[str]) -> str:
-    if input:
-        return input
-
-    err, data = fs.read_source(source)  # type: ignore
-    if err:
-        log.fatal(err)
-
-    return data  # type: ignore
-
-
 @qrize.command()
 def generate(
     input: Optional[str] = typer.Option(None, help="Data to encode"),
@@ -40,18 +29,20 @@ def generate(
             "Either --clipboard or --output (or both) must be provided."
         )
 
-    data: str = xor(input=input, source=source)
-    err, image = qr.generate(data=data)
-
+    err, data = utils.xor(input=input, source=source)
     if err:
-        log.fatal(message=f"Error occured during generation: {err}")
+        log.fatal(err)
+
+    err, image = qr.generate(data=data)
+    if err:
+        log.fatal(message=err)
 
     if output:
-        err, _ = fs.save_image(image, output)  # type: ignore
+        err, _ = fs.save_image(image, output)
         if err:
             log.fatal(message=err)
 
     if clipboard:
-        err, _ = utils.copy_to_clipboard(image)  # type: ignore
+        err, _ = utils.copy_to_clipboard(image)
         if err:
             log.fatal(message=err)

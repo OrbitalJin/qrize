@@ -32,7 +32,7 @@ qrize pdf batch [--args]
 ## TODO
 - [ ] add support for both wayland and x11
 - [ ] write qr code image to pdf file
-- [ ] schema validation
 - [ ] batch operation pdf (identical)
 - [ ] batch operation pdf (from data file + schema)
+- [x] schema validation
 - [x] generate qr code image from data
