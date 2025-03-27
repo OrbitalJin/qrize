@@ -1,19 +1,29 @@
 # QRize
 
-A command-line tool to generate QR codes from JSON data and create printable PDF documents.
+A command-line tool to generate QR codes from JSON data and render printable PDF documents.
 
 ## Installation
 
-To install `qrize` from PYPI, use:
+To try `qrize` through [uv](https://docs.astral.sh/uv/guides/tools/) (Recommended)
 
 ```sh
-pip install qrize
+$ uvx qrize
+
+# Or 
+
+$ uv tool run qrize
 ```
 
-On arch, it available on the aur 
+To install it:
+
+```sh 
+$ uv tool install qrize
+```
+
+On arch, it is available on the aur:
 
 ```
-yay -S qrize
+$ yay -S qrize
 ```
 
 > [!WARNING]
