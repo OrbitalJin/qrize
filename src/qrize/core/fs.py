@@ -64,11 +64,13 @@ def read_schema(source: Optional[str]) -> Result[Dict]:
 
 
 def save_image(image: Optional[Image], destination: str) -> Result[bool]:
+    """
+    Persist a qr code on the filesystem
+    """
     if not image:
         return ("Cannot save empty image.", None)
 
-    path: str = os.path.join(os.getcwd(), destination)
-    if os.path.exists(path):
+    if exists(destination):
         return ("File already exists.", False)
 
     try:
@@ -77,3 +79,8 @@ def save_image(image: Optional[Image], destination: str) -> Result[bool]:
 
     except Exception as e:
         return (str(e), False)
+
+
+def exists(file: str) -> bool:
+    path: str = os.path.join(os.getcwd(), file)
+    return os.path.exists(path)

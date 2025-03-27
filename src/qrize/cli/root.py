@@ -13,8 +13,8 @@ qrize.add_typer(pdf.app)
 def generate(
     input: Optional[str] = typer.Option(None, help="Data to encode"),
     source: Optional[str] = typer.Option(None, help="File to encode"),
+    output: Optional[str] = typer.Option(default="./qr.png", help="Output file name"),
     clipboard: bool = typer.Option(default=False, help="Copy to clipboard"),
-    output: Optional[str] = typer.Option(None, help="Output file name"),
 ):
     if input and source:
         raise typer.BadParameter(

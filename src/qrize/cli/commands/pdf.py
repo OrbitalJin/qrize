@@ -1,10 +1,27 @@
 from typing import Dict, List
-from qrize.core import log, qr, fs
+from qrize.core import log, pdf, fs
 import typer
 
 from qrize.core import validators
 
 app: typer.Typer = typer.Typer(name="pdf")
+
+
+def filter_entries(entries: List[Dict], validator: Dict) -> List[Dict]:
+    """
+    Filter out entries that don't match the schema
+    """
+    for entry in entries:
+        if not entry:
+            log.warn("Empty entry, skipping.")
+            continue
+
+        err, _ = validators.validate_against_schema(entry, validator)
+        if err:
+            entries.remove(entry)
+            log.warn(message=err)
+
+    return entries
 
 
 @app.command()
@@ -13,6 +30,7 @@ def bulk(
     schema: str = typer.Option(
         help="schema file containing the json validation object"
     ),
+    output: str = typer.Option(help="output file"),
     identifier: str = typer.Option(
         help="key to use to uniquely identify the entry, it must be present in the schema"
     ),
@@ -34,18 +52,9 @@ def bulk(
     if err:
         return log.fatal(message=err)
 
-    if not isinstance(entries, list):
-        entries = [entries]
+    if not entries:
+        return log.fatal("No entries have been provided.")
 
-    for entry in entries:
-        if not entry:
-            log.warn("Empty entry, skipping.")
-            continue
+    entries = filter_entries(entries=entries, validator=validator)
 
-        err, _ = validators.validate_against_schema(entry, validator)
-
-        if err:
-            log.warn(message=err)
-            continue
-
-        print(entry.get(identifier, None))
+    pdf.generate_from_entries(entries=entries, identifier=identifier, output=output)
