@@ -1,4 +1,6 @@
-from typing import List, Optional, Dict
+from typing import Any, List, Optional, Dict
+
+import typer
 from qrize.core import validators
 from qrize.core.types import Result
 from PIL.Image import Image
@@ -15,6 +17,31 @@ def read_source(source: Optional[str]) -> Result[str]:
     try:
         with open(source, "r") as src:
             data = json.load(src)
+
+        return (None, data)
+
+    except FileNotFoundError:
+        return ("File not found.", None)
+
+    except json.JSONDecodeError:
+        return ("Failed to deserialize content, check for integrity.", None)
+
+
+def read_entry(source: str) -> Result[Any]:
+    """
+    Read the entries from the source file
+    """
+    try:
+        with open(source, "r") as src:
+            data = json.load(src)
+
+        if isinstance(data, list):
+            if len(data) != 0:
+                typer.echo("Data is of type Array, only first value will be used.")
+                return (None, data[0])
+
+            else:
+                return ("An empty array cannot will not be encoded.", None)
 
         return (None, data)
 
