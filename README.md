@@ -176,8 +176,8 @@ the entries when rendered.
     "description": "Description 1",
     "timeout": 4
   },
-  {
-    "title": "Title 2",
+  {                        <- This will be skipped
+    "name": "John Doe",    <- Not valid
     "description": "Description 2",
     "timeout": 2
   },

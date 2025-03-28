@@ -1,5 +1,5 @@
 from jsonschema import Draft7Validator, validate, ValidationError
-from typing import Dict
+from typing import Dict, Optional
 
 from jsonschema.exceptions import SchemaError
 
@@ -32,7 +32,7 @@ def validate_schema(schema: Dict) -> Result[bool]:
         return ("Invalid schema", False)
 
 
-def has_property(schema: Dict, property: str) -> bool:
+def has_property(schema: Dict, property: Optional[str]) -> bool:
     """
     Check wether the schema has a given prop
     """

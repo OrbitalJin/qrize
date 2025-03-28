@@ -10,13 +10,13 @@ app: typer.Typer = typer.Typer(name="pdf")
 @app.command()
 def bulk(
     source: str = typer.Option(help="input file containing the json array"),
-    schema: str = typer.Option(
-        help="schema file containing the json validation object"
+    schema: Optional[str] = typer.Option(
+        None, help="schema file: json validation object"
+    ),
+    identifier: Optional[str] = typer.Option(
+        None, help="primary key identifier (requires schema)"
     ),
     output: str = typer.Option(help="output file"),
-    identifier: str = typer.Option(
-        help="key to use to uniquely identify the entry, it must be present in the schema"
-    ),
     margin: int = typer.Option(default=10, help="margins around each qr code"),
     size: int = typer.Option(default=40, help="size of each qr code"),
     spacing: int = typer.Option(default=5, help="spacing between each code"),
@@ -24,36 +24,43 @@ def bulk(
     """
     Processes several entries based on a common schema. And renders a pdf file.
     """
-    err, validator = fs.read_schema(schema)
-    if err:
-        log.fatal(message=err)
 
-    if not validator:
-        return log.fatal(message="No validator was found.")
+    if schema and not identifier:
+        raise typer.BadParameter("--identifier is required when --schema is provided.")
 
-    if not validators.has_property(validator, identifier):
-        return log.fatal(message=f"Identifier must be a valid key of the schema.")
+    if identifier and not schema:
+        raise typer.BadParameter("--schema is required when --identifier is provided.")
 
     err, entries = fs.read_entries(source)
     if err:
-        return log.fatal(message=err)
+        return log.fatal(f"Error reading entries file '{source}': {err}")
 
     if not entries:
         return log.fatal("No entries have been provided.")
 
-    entries = qr.filter_entries(entries=entries, validator=validator)
+    if schema and identifier:
+        err, validator = fs.read_schema(schema)
+        if err:
+            return log.fatal(f"Error reading schema file '{schema}': {err}")
 
-    try:
-        pdf.generate_from_entries(
-            entries=entries,
-            identifier=identifier,
-            output=str(output),
-            margin=margin,
-            qr_size=size,
-            spacing=spacing,
-        )
-    except Exception as e:
-        log.fatal(f"Error generating PDF: {e}")
+        if not validator:
+            return log.fatal("No validator was found.")
+
+        if not validators.has_property(validator, identifier):
+            return log.fatal(
+                f"Identifier '{identifier}' must be a valid key of the schema."
+            )
+
+        entries = qr.filter_entries(entries=entries, validator=validator)
+
+    pdf.generate_from_entries(
+        entries=entries,
+        identifier=identifier,
+        output=str(output),
+        margin=margin,
+        qr_size=size,
+        spacing=spacing,
+    )
 
 
 @app.command()

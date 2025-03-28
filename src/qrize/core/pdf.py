@@ -62,7 +62,7 @@ def generate_from_counter(
 
 def generate_from_entries(
     entries: Optional[List[Dict]],
-    identifier: str,
+    identifier: Optional[str],
     output: str,
     margin: int = 10,
     qr_size: int = 40,
@@ -111,7 +111,7 @@ def generate_from_entries(
             pdf.drawInlineImage(img, x, y - qr_size_, width=qr_size_, height=qr_size_)
 
             pdf.setFont("Helvetica", 10)
-            label = data[identifier]
+            label = data[identifier] if identifier else str(idx)
             pdf.drawString(x + 10, y - qr_size_ - label_height, label)
 
     pdf.save()
