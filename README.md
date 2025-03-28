@@ -110,6 +110,12 @@ args:
 | `--qr_size`  | int  | `40`     | Size of each QR code in the PDF                 |
 | `--spacing`  | int  | `5`      | Spacing between QR codes in the PDF             |
 
+#### Example
+
+```sh 
+qrize pdf bulk --source "data.json" --output "foo.pdf"
+```
+
 ---
 
 #### Batch Generation (`batch`)
