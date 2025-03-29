@@ -1,64 +1,59 @@
-from typing import Any, List, Optional, Dict
-
+from typing import Any, List, Optional, Dict, Callable
+from PIL.Image import Image
+from pathlib import Path
 import typer
+import json
+
 from qrize.core import validators
 from qrize.core.types import Result
-from PIL.Image import Image
-import json
-import os
 
 
 def read_source(source: Optional[str]) -> Result[str]:
     """
-    Read the entries from the source file
+    Read raw data from source file
     """
-    if not source:
-        return ("No file provied.", None)
-    try:
-        with open(source, "r") as src:
-            data = json.load(src)
-
-        return (None, data)
-
-    except FileNotFoundError:
-        return ("File not found.", None)
-
-    except json.JSONDecodeError:
-        return ("Failed to deserialize content, check for integrity.", None)
+    return read_json_file(source)
 
 
 def read_entry(source: str) -> Result[Any]:
     """
-    Read the entries from the source file
+    Read single entry from source file
     """
-    try:
-        with open(source, "r") as src:
-            data = json.load(src)
-
-        if isinstance(data, list):
-            if len(data) != 0:
-                typer.echo("Data is of type Array, only first value will be used.")
-                return (None, data[0])
-
-            else:
-                return ("An empty array cannot will not be encoded.", None)
-
-        return (None, data)
-
-    except FileNotFoundError:
-        return ("File not found.", None)
-
-    except json.JSONDecodeError:
-        return ("Failed to deserialize content, check for integrity.", None)
+    return read_json_file(source, process_single_entry)
 
 
 def read_entries(source: str) -> Result[List[Dict]]:
     """
-    Read the entries from the source file
+    Read multiple entries from source file
     """
+    return read_json_file(source)
+
+
+def read_schema(source: Optional[str]) -> Result[Dict]:
+    """
+    Read and validate schema from source file
+    """
+    return read_json_file(source, process_schema)
+
+
+def read_json_file[
+    T
+](
+    source: Optional[str],
+    processor: Optional[Callable[[Any], Result[T]]] = None,
+) -> Result[T]:
+    """
+    Generic JSON file reader with optional post-processing
+    """
+    if not source:
+        return ("No file provided.", None)
+
     try:
         with open(source, "r") as src:
-            data: List[Dict] = json.load(src)
+            data = json.load(src)
+
+        if processor:
+            return processor(data)
 
         return (None, data)
 
@@ -69,45 +64,60 @@ def read_entries(source: str) -> Result[List[Dict]]:
         return ("Failed to deserialize content, check for integrity.", None)
 
 
-def read_schema(source: Optional[str]) -> Result[Dict]:
+def process_single_entry(data: Any) -> Result[Any]:
     """
-    Read the entries from the source file
+    Process data to return single entry
     """
-    if not source:
-        return ("No file provied.", None)
-    try:
-        with open(source, "r") as src:
-            data: Dict = json.load(src)
+    if not isinstance(data, list):
+        return (None, data)
 
-        err, _ = validators.validate_schema(data)
+    if not data:
+        return ("An empty array cannot be encoded.", None)
 
-        return (err, data)
-
-    except FileNotFoundError:
-        return ("File not found.", None)
-
-    except json.JSONDecodeError:
-        return ("Failed to deserialize content, check for integrity.", None)
+    typer.echo("Data is of type Array, only first value will be used.")
+    return (None, data[0])
 
 
-def save_image(image: Optional[Image], destination: str) -> Result[bool]:
+def process_schema(data: Dict) -> Result[Dict]:
     """
-    Persist a qr code on the filesystem
+    Process and validate schema data
     """
-    if not image:
-        return ("Cannot save empty image.", None)
+    err, _ = validators.validate_schema(data)
+    return (err, data)
 
-    if exists(destination):
+
+def save_file(
+    data: Optional[Any],
+    destination: str,
+    saver: Callable[[Any, str], None],
+) -> Result[bool]:
+    """
+    Generic file saving function
+    """
+
+    if not data:
+        return ("Cannot save empty data.", None)
+
+    if Path(destination).exists():
         return ("File already exists.", False)
 
     try:
-        image.save(destination)
+        saver(data, destination)
         return (None, True)
 
     except Exception as e:
         return (str(e), False)
 
 
+def save_image(image: Optional[Image], destination: str) -> Result[bool]:
+    """
+    Save PIL Image to file
+    """
+    return save_file(image, destination, lambda img, dest: img.save(dest))
+
+
 def exists(file: str) -> bool:
-    path: str = os.path.join(os.getcwd(), file)
-    return os.path.exists(path)
+    """
+    Check if file exists using absolute path
+    """
+    return Path(file).absolute().exists()

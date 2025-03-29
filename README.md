@@ -69,7 +69,7 @@ args:
 qrize gen --input "I'm stuck in Vim" --size 10 --border 5 --output "./foo.png" --clipboard
 ```
 
-This generates a QR code with `size=10`, `border=5`, saves it as `./foo.png`, and copies it to the clipboard.
+This generates a QR code of `size=10`, `border=5`, saves it as `./foo.png`, and copies it to the clipboard.
 
 ---
 
