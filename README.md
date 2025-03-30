@@ -206,7 +206,6 @@ qrize pdf bulk --source "data.json" --schema "schema.json" --identifier "title" 
 
 ## TODO
 
-- [ ] Migrate file paths to `pathlib.Path`
 - [ ] Add support for both Wayland and X11 clipboard operations
 - [x] Implement batch operation for PDFs (identical QR codes)
 - [x] Implement bulk operation for PDFs (from data file + schema)
