@@ -19,7 +19,7 @@ def generate(data: Any, size: int = 8, border: int = 4) -> Result[Image.Image]:
         return (str(e), None)
 
     qr: qrcode.QRCode = qrcode.QRCode(
-        version=1,
+        version=2,
         box_size=size,
         border=border,
     )

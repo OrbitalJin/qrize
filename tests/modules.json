@@ -1,0 +1,53 @@
+
+ [
+    {
+      "title": "Ring Transfer",
+      "description": "Move eight rings on a platform from right to left and back using both hands.",
+      "timeout": 4
+    },
+    {
+      "title": "Marbles",
+      "description": "Perform various exercises including moving balls, pronation, precision, and depth perception.",
+      "timeout": 4
+    },
+    {
+      "title": "Flex Pad",
+      "description": "Manipulate instruments with both hands, stretching elastic rubbers to feel tension and improve manual skills.",
+      "timeout": 5
+    },
+    {
+      "title": "Shape Cutting",
+      "description": "Precisely cut a different shapes using scissors without crossing the limitations.",
+      "timeout": 10
+    },
+    {
+      "title": "Vessel Clipping",
+      "description": "Safely clip vessels, such as the uterine artery in myomectomy.",
+      "timeout": 7
+    },
+    {
+      "title": "Needle Loading",
+      "description": "Develop precision in both hands and learn to maneuver the needle in space at different angles.",
+      "timeout": 10
+    },
+    {
+      "title": "Basic Suturing",
+      "description": "Grasp the needle correctly with the needle holder, rotate it through holes, and perform proper wrist movements.",
+      "timeout": 10
+    },
+    {
+      "title": "Expert Suturing",
+      "description": "Master suturing in different incision directions, mainly in a limited field of vision, and perform continuous suturing.",
+      "timeout": 10
+    },
+    {
+      "title": "Suturing Pad",
+      "description": "Perform extra and intra corporeal techniques and learn how to tie a knot under tension step by step.",
+      "timeout": 10
+    },
+    {
+      "title": "Anastomosis: Advanced Suturing",
+      "description": "Perform various types of anastomosis (end-to-end, side-to-side, end-to-side).",
+      "timeout": 10
+    }
+ ]
