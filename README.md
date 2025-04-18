@@ -206,7 +206,7 @@ qrize pdf bulk --source "data.json" --schema "schema.json" --identifier "title" 
 
 ## TODO
 
-- [ ] Add support for both Wayland and X11 clipboard operations
+- [ ] Add support for both Wayland and X11 clipboard APIs
 - [x] Implement batch operation for PDFs (identical QR codes)
 - [x] Implement bulk operation for PDFs (from data file + schema)
 - [x] Write QR code images to PDF files
